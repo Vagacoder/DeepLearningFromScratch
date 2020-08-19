@@ -140,3 +140,9 @@ cython_debug/
 
 # VScode
 .vscode/
+
+# For this book
+## ignore pickles
+*.pkl
+## ignore compressed data
+*.gz

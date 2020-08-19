@@ -11,4 +11,9 @@ Initial repository.
 #### 2020/08/15
 Start study
 
+#### 2020/08/19
+To download MNIST handwrittten digits database, go to folder `ch03`, run
 
+    ```$ python mnist_show.py```
+
+It will take couple of minutes to download and process data.
