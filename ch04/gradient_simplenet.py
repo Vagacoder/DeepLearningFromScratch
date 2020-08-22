@@ -10,8 +10,10 @@ class simpleNet:
     def __init__(self):
         self.W = np.random.randn(2,3)
 
+
     def predict(self, x):
         return np.dot(x, self.W)
+
 
     def loss(self, x, t):
         z = self.predict(x)
@@ -19,6 +21,7 @@ class simpleNet:
         loss = cross_entropy_error(y, t)
 
         return loss
+
 
 x = np.array([0.6, 0.9])
 t = np.array([0, 0, 1])

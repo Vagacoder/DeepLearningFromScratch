@@ -45,7 +45,7 @@ def numerical_diff_bad(f, x):
     return (f(x + h) - f(x)) / h
 
 
-# * numerical differentiation
+# * numerical differentiation. better implementation
 def numerical_diff(f, x):
     h = 1e-4
     return (f(x + h) - f(x - h)) / (2 * h)
@@ -71,14 +71,17 @@ def numerical_gradient(f, x):
     return grad
 
 
-# * Gradient descent method
+# * Gradient descent method (print statements are for debug)
 def gradient_descent(f, initX, lr=0.01, stepNum=100):
     x = initX
 
     for i in range(stepNum):
         grad = numerical_gradient(f, x)
+        # print(i, end=", grad: ")
+        # print(grad, end=", x: ")
         x -= lr * grad
-
+        # print(x)
+        
     return x
 
 

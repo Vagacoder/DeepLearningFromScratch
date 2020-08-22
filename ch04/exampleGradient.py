@@ -8,11 +8,13 @@ from functionsCh4 import numerical_gradient, gradient_descent
 def function2(x):
     return np.sum(x**2)
 
+
 print(numerical_gradient(function2, np.array([3.0, 4.0])))
 
 print(numerical_gradient(function2, np.array([0.0, 2.0])))
 
 print(numerical_gradient(function2, np.array([3.0, 0.0])))
+
 
 init_x = np.array([-3.0, 4.0])
 print('Learning rate = 0.1')
