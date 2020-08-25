@@ -1,8 +1,14 @@
 #
 
 import numpy as np 
+import sys, os
 
-# * Multiplication layer
+sys.path.append(os.pardir)
+
+from functionsCh4 import softmax, cross_entropy_error
+
+# * 1. Simple operation layers
+# * 1.1. Multiplication layer
 class MulLayer:
     def __init__(self):
         self.x = None
@@ -22,7 +28,7 @@ class MulLayer:
         return dx,dy
 
 
-# * Addition layer
+# * 1.2. Addition layer
 class AddLayer:
     def __init__(self):
         pass
@@ -36,8 +42,8 @@ class AddLayer:
         return (dout * 1), (dout * 1)
 
 
-# * Activation Function Layers ==========================
-# * Relu (Rectified Linear Unit) layer
+# * 2. Activation Function Layers ==========================
+# * 2.1. Relu (Rectified Linear Unit) layer
 class Relu:
     def __init__(self):
         self.mask = None
@@ -56,7 +62,7 @@ class Relu:
         return dx
 
 
-# * Sigmoid layer
+# * 2.2. Sigmoid layer
 class Sigmoid:
     def __init__(self):
         self.out = None
@@ -73,7 +79,8 @@ class Sigmoid:
         return dx
 
 
-# * Affine/Softmax layer
+# * 3. Output Layer (the last activation function layer)
+# * 3.1. Affine layer
 class Affine:
 
     def __init__(self, W, b):
@@ -95,5 +102,41 @@ class Affine:
         self.dw = np.dot(self.x.T, dout)
         self.db = np.sum(dout, axix=0)
         return dx
+
+
+# * 3.2. Softmax-with-Loss Layer (Output + Loss Function Layer)
+class SoftMaxWithLoss:
+
+    def __init__(self):
+        self.loss = None
+
+        # ? output of softmax
+        self.y = None
+
+        # ? teaching tags (one-hot vector)
+        self.t = None
+
+    
+    def forward(self, x, t):
+        self.t = t
+
+        # * using implementation of softmax from ch4
+        self.y = softmax(x)
+
+        # * using implementation of cross_entropy_error from ch4
+        self.loss = cross_entropy_error(self.y, self.t)
+
+        return self.loss
+
+
+    def backward(self, dout = 1):
+
+        # ! IMPORTANT, need divided by batch size
+        batchSize = self.t.shape(0)
+        dx = (self.y - self.t)/batchSize
+        return dx
+
+
+
 
 
