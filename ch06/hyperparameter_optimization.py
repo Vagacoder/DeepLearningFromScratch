@@ -1,4 +1,6 @@
 # coding: utf-8
+
+#%%
 import sys, os
 sys.path.append(os.pardir)  # 为了导入父目录的文件而进行的设定
 import numpy as np
@@ -16,7 +18,7 @@ t_train = t_train[:500]
 
 # 分割验证数据
 validation_rate = 0.20
-validation_num = x_train.shape[0] * validation_rate
+validation_num = (int) (x_train.shape[0] * validation_rate)
 x_train, t_train = shuffle_dataset(x_train, t_train)
 x_val = x_train[:validation_num]
 t_val = t_train[:validation_num]

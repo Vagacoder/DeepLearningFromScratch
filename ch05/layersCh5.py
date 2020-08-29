@@ -106,6 +106,7 @@ class Affine:
 
 # * 4. Output Layer (the last activation function layer) =======================
 # * 4.1. Softmax-with-Loss Layer (Output + Loss Function Layer)
+# ? softmax() and cross_entropy_error are from ch04/functionsCh4.py
 class SoftMaxWithLoss:
 
     def __init__(self):
@@ -137,6 +138,26 @@ class SoftMaxWithLoss:
         dx = (self.y - self.t)/batchSize
         return dx
 
+
+# * 5. Layers for preventing overfitting
+# * 5.1. Dropout (randomly delete neurons during learning)
+class Dropout:
+
+    def __init__(self, dropout_ratio=0.5):
+        self.dropout_ratio = dropout_ratio
+        self.mask = None
+
+
+    def forward(self, x, train_flg=True):
+        if train_flg:
+            self.mask = np.random.rand(*x.shape) > self.dropout_ratio
+            return x * self.mask
+        else:
+            return x * (1.0 - self.dropout_ratio)
+
+
+    def backward(self, dout):
+        return dout * self.mask
 
 
 
