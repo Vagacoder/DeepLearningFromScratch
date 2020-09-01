@@ -5,7 +5,7 @@ import sys, os
 
 sys.path.append(os.pardir)
 
-from functionsCh4 import softmax, cross_entropy_error
+from functionsCh4 import softmax, cross_entropy_error, im2col, col2im
 
 # * 1. Simple operation layers =================================================
 # * 1.1. Multiplication layer
@@ -160,5 +160,86 @@ class Dropout:
         return dout * self.mask
 
 
+# * 6. Convolution Neural Network layers
+# * 6.1. convolution layer
+class Convolution:
+
+    def __init__(self, W, b, stride=1, pad=0):
+        self.W = W
+        self.b = b
+        self.stride = stride
+        self.pad = pad
 
 
+    def forward(self, x):
+        FN, C, FH, FW = self.W.shape
+        N, C, H, W = x.shape
+        out_h = int(1 + (H + 2 * self.pad - FH) / self.stride)
+        out_w = int(1 + (W + 2 * self.pad - FW) / self.stride)
+
+        # ? expand input dataset
+        col = im2col(x, FH, FW, self.stride, self.pad)
+        # ? expand filter to 2d array
+        col_W = self.W.reshape(FN, -1).T
+
+        # ? 
+        out = np.dot(col, col_W) + self.b
+        out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
+
+        return out
+
+
+    def backward(self, dout):
+        FN, C, FH, FW = self.W.shape
+        dout = dout.transpose(0,2,3,1).reshape(-1, FN)
+
+        self.db = np.sum(dout, axis=0)
+        self.dW = np.dot(self.col.T, dout)
+        self.dW = self.dW.transpose(1, 0).reshape(FN, C, FH, FW)
+
+        dcol = np.dot(dout, self.col_W.T)
+        dx = col2im(dcol, self.x.shape, FH, FW, self.stride, self.pad)
+
+        return dx
+
+
+# * 6.2. Pooling Layer
+class Pooling:
+
+    def __init__(self, pool_h, pool_w, stride=1, pad=0):
+        self.pool_h = pool_h
+        self.pool_w = pool_w
+        self.stride = stride
+        self.pad = pad
+
+    
+    def forward(self, x):
+        N, C, H, W = x.shape
+        out_h = int(1 + (H - self.pool_h) / self.stride)
+        out_w = int(1 + (H - self.pool_w) / self.stride)
+
+        # ? step 1. expand input dataset
+        col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
+        col = col.reshape(-1, self.pool_h * self.pool_w)
+
+        # ? step 2. max value of each row
+        out = np.max(col, axis=1)
+
+        # ? step 3. transform to correct form for output
+        out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
+
+        return out
+
+
+    def backward(self, dout):
+        dout = dout.transpose(0, 2, 3, 1)
+        
+        pool_size = self.pool_h * self.pool_w
+        dmax = np.zeros((dout.size, pool_size))
+        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()
+        dmax = dmax.reshape(dout.shape + (pool_size,)) 
+        
+        dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
+        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
+        
+        return dx

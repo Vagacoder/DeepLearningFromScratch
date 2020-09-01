@@ -228,6 +228,7 @@ class Convolution:
         self.col_W = col_W
 
         return out
+        
 
     def backward(self, dout):
         FN, C, FH, FW = self.W.shape

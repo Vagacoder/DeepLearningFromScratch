@@ -1,8 +1,10 @@
 # * Functions for chapter 4
-import numpy as np 
+import numpy as np
 
 # * 1. Output Functions ========================================================
 # * 1.1. Identity function
+
+
 def identity_function(x):
     return x
 
@@ -97,7 +99,56 @@ def gradient_descent(f, initX, lr=0.01, stepNum=100):
         # print(grad, end=", x: ")
         x -= lr * grad
         # print(x)
-        
+
     return x
 
 
+# * 4. Convolutional Neural Network
+
+# * 4.1. Image to Column
+# ? Parameters:
+# ? input_data: input dataset, 4 dimemnsions: batch_number, channel_number, height, width
+# ? filter_h: height of filter
+# ? filter_w: width of filter
+# ? stride: stride of filter
+# ? pad: padding number for inputer dataset
+def im2col(input_data, filter_h, filter_w, stride=1, pad=0):
+    N, C, H, W = input_data.shape
+    out_h = (H + 2*pad - filter_h)//stride + 1
+    out_w = (W + 2*pad - filter_w)//stride + 1
+
+    img = np.pad(input_data, [(0, 0), (0, 0),
+                              (pad, pad), (pad, pad)], 'constant')
+    col = np.zeros((N, C, filter_h, filter_w, out_h, out_w))
+
+    for y in range(filter_h):
+        y_max = y + stride*out_h
+        for x in range(filter_w):
+            x_max = x + stride*out_w
+            col[:, :, y, x, :, :] = img[:, :, y:y_max:stride, x:x_max:stride]
+
+    col = col.transpose(0, 4, 5, 1, 2, 3).reshape(N*out_h*out_w, -1)
+    return col
+
+# * 4.2. Column back to image
+# ? Parameters:
+# ? col: input dataset, usually it is returned from im2col()
+# ? input_shape: input dataset shape , e.g. (10, 1, 28, 28)
+# ? filter_h: height of filter
+# ? filter_w: width of filter
+# ? stride: stride
+# ? pad: padding number for input dataset
+def col2im(col, input_shape, filter_h, filter_w, stride=1, pad=0):
+    N, C, H, W = input_shape
+    out_h = (H + 2*pad - filter_h)//stride + 1
+    out_w = (W + 2*pad - filter_w)//stride + 1
+    col = col.reshape(N, out_h, out_w, C, filter_h, filter_w).transpose(0, 3, 4, 5, 1, 2)
+
+    img = np.zeros((N, C, H + 2*pad + stride - 1, W + 2*pad + stride - 1))
+    for y in range(filter_h):
+        y_max = y + stride*out_h
+        for x in range(filter_w):
+            x_max = x + stride*out_w
+            img[:, :, y:y_max:stride, x:x_max:stride] += col[:, :, y, x, :, :]
+
+    return img[:, :, pad:H + pad, pad:W + pad]
