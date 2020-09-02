@@ -1,22 +1,169 @@
 #
 
+import sys, os
+sys.path.append(os.pardir)
+import numpy as np
+import pickle
+from collections import OrderedDict
+from common.layers import *
+from common.gradient import numerical_gradient
+
+
 # * Simple Convolutional Neural Network
 class SimpleConvNet:
 
+    # * Constructor, check carefully
     def __init__(self, 
                 input_dim=(1, 28, 28),
-                conv_param={'filter_num':30, 'filter_size': 5, 'pad':0, 'stride': 1},
+                conv_param={
+                    'filter_num':30, 
+                    'filter_size': 5, 
+                    'pad':0, 
+                    'stride': 1},
                 hidden_size=100, 
                 output_size=10, 
                 weight_init_std=0.01
                 ):
+
         filter_num = conv_param['filter_num']
         filter_size = conv_param['filter_size']
         filter_pad = conv_param['pad']
         filter_stride = conv_param['stride']
-        input_size = input_dim[i]
-        conv_output_size = (input_size - filter_size + 2*filter_pad)/ filter_stride + 1
-        pool_output_size = int(filter_num * (conv_output_size/ 2) * (conv_output_size/2))
 
+        input_size = input_dim[1]
+        
+        # ? Calculate Convolutiona and Pooling layer output shape
+        conv_output_size = (input_size - filter_size + 2*filter_pad) / filter_stride + 1
+        pool_output_size = int(filter_num * (conv_output_size/2) * (conv_output_size/2))
 
+        # * Initialize Weights and Bias for each layer
+        self.params = {}
+        # * for layer of conv - relu - pool
+        self.params['W1'] = weight_init_std * \
+                            np.random.randn(filter_num, input_dim[0], filter_size, filter_size)
+        self.params['b1'] = np.zeros(filter_num)
+
+        # * for layer of affine - relu
+        self.params['W2'] = weight_init_std * \
+                            np.random.randn(pool_output_size, hidden_size)
+        self.params['b2'] = np.zeros(hidden_size)
+
+        # * for layer of affine - softmax
+        self.params['W3'] = weight_init_std * \
+                            np.random.randn(hidden_size, output_size)
+        self.params['b3'] = np.zeros(output_size)
     
+        # * Generate and assemble layers
+        self.layers = OrderedDict()
+
+        # * layer of conv - relu - pool
+        self.layers['Conv1'] = Convolution(self.params['W1'], self.params['b1'],
+                                           conv_param['stride'], conv_param['pad'])
+        self.layers['Relu1'] = Relu()
+        self.layers['Pool1'] = Pooling(pool_h=2, pool_w=2, stride=2)
+
+        # * layer of affine - relu
+        self.layers['Affine1'] = Affine(self.params['W2'], self.params['b2'])
+        self.layers['Relu2'] = Relu()
+
+        # * last layer of affine - softmax
+        self.layers['Affine2'] = Affine(self.params['W3'], self.params['b3'])
+        # ! Note: softemax is added to separated layer, because predict does not need it
+        self.last_layer = SoftmaxWithLoss()
+
+
+    # * For inference
+    def predict(self, x):
+        for layer in self.layers.values():
+            x = layer.forward(x)
+
+        return x
+
+
+    # * For loss
+    # ? Parameters: x: training(input) dataset, t: test dataset
+    def loss(self, x, t):
+        y = self.predict(x)
+        # ! predict + softmax + loss
+        return self.last_layer.forward(y, t)
+
+
+    # * For gradient
+    # ? Parameters: x: training(input) dataset, t: test dataset
+    def gradient(self, x, t):
+
+        # * forward
+        self.loss(x, t)
+
+        # * backward
+        # ? backward last layer (softmax + loss)
+        dout = 1
+        dout = self.last_layer.backward(dout)
+
+        layers = list(self.layers.values())
+        layers.reverse()
+        for layer in layers:
+            dout = layer.backward(dout)
+
+        # ? Save and return gradients of each layer
+        grads = {}
+        grads['W1'], grads['b1'] = self.layers['Conv1'].dW, self.layers['Conv1'].db
+        grads['W2'], grads['b2'] = self.layers['Affine1'].dW, self.layers['Affine1'].db
+        grads['W3'], grads['b3'] = self.layers['Affine2'].dW, self.layers['Affine2'].db
+
+        return grads
+
+
+    # * Numerical gradient, for verification
+    # ? Parameters: x: training(input) dataset, t: test dataset
+    def numerical_gradient(self, x, t):
+        loss_w = lambda w : self.loss(x, t)
+
+        grads = {}
+
+        for index in (1, 2, 3):
+            grad['W' + str(index)] = numerical_gradient(loss_w, self.params['W' + str(index)])
+            grad['b' + str(index)] = numerical_gradient(loss_w, self.params['b' + str(index)])
+
+
+    # * Find accuracy
+    # ? Parameters: x: training(input) dataset, t: test dataset
+    def accuracy(self, x, t, batch_size=100):
+        if t.ndim != 1 : t = np.argmax(t, axis=1)
+        
+        acc = 0.0
+        
+        for i in range(int(x.shape[0] / batch_size)):
+            tx = x[i*batch_size:(i+1)*batch_size]
+            tt = t[i*batch_size:(i+1)*batch_size]
+            y = self.predict(tx)
+            y = np.argmax(y, axis=1)
+            acc += np.sum(y == tt) 
+        
+        return acc / x.shape[0]
+
+
+    # * Save trained parameters: weights and bias
+    def save_params(self, file_name="params.pkl"):
+        params = {}
+
+        for key, val in self.params.items():
+            params[key] = val
+        
+        with open(file_name, 'wb') as f:
+            pickle.dump(params, f)
+
+
+    # * Load saved trained parameters: weights and bias
+    def load_params(self, file_name="params.pkl"):
+        with open(file_name, 'rb') as f:
+            params = pickle.load(f)
+        
+        for key, val in params.items():
+            self.params[key] = val
+
+        for i, key in enumerate(['Conv1', 'Affine1', 'Affine2']):
+            self.layers[key].W = self.params['W' + str(i+1)]
+            self.layers[key].b = self.params['b' + str(i+1)]
+
+

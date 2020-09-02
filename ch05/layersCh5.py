@@ -165,6 +165,7 @@ class Dropout:
 class Convolution:
 
     def __init__(self, W, b, stride=1, pad=0):
+        # ? weights for filters
         self.W = W
         self.b = b
         self.stride = stride
@@ -172,18 +173,24 @@ class Convolution:
 
 
     def forward(self, x):
+        # ? get 4 parameters of filter
         FN, C, FH, FW = self.W.shape
+        # ? get 4 parameters of input data
         N, C, H, W = x.shape
+        # ? calculate output shape
         out_h = int(1 + (H + 2 * self.pad - FH) / self.stride)
         out_w = int(1 + (W + 2 * self.pad - FW) / self.stride)
 
-        # ? expand input dataset
+        # ? expand input dataset to 2d array
         col = im2col(x, FH, FW, self.stride, self.pad)
         # ? expand filter to 2d array
         col_W = self.W.reshape(FN, -1).T
 
-        # ? 
+        # ? calculation output
         out = np.dot(col, col_W) + self.b
+
+        # ? transform output to correct shape
+        # ? transpose() change dimesion (N, H, W, C) to (N, C, H, W)
         out = out.reshape(N, out_h, out_w, -1).transpose(0, 3, 1, 2)
 
         return out
