@@ -24,11 +24,15 @@ class DeepConvNet:
                  conv_param_5 = {'filter_num':64, 'filter_size':3, 'pad':1, 'stride':1},
                  conv_param_6 = {'filter_num':64, 'filter_size':3, 'pad':1, 'stride':1},
                  hidden_size=50, output_size=10):
-        # 初始化权重===========
-        # 各层的神经元平均与前一层的几个神经元有连接（TODO:自动计算）
+        # * 初始化权重===========
+        # * 各层的神经元平均与前一层的几个神经元有连接
+        # TODO: 自动计算
         pre_node_nums = np.array([1*3*3, 16*3*3, 16*3*3, 32*3*3, 32*3*3, 64*3*3, 64*4*4, hidden_size])
-        wight_init_scales = np.sqrt(2.0 / pre_node_nums)  # 使用ReLU的情况下推荐的初始值
         
+        # * 使用ReLU的情况下推荐的初始值, He initial value
+        wight_init_scales = np.sqrt(2.0 / pre_node_nums)  
+        
+        # 
         self.params = {}
         pre_channel_num = input_dim[0]
         for idx, conv_param in enumerate([conv_param_1, conv_param_2, conv_param_3, conv_param_4, conv_param_5, conv_param_6]):

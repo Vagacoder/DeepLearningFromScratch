@@ -164,7 +164,13 @@ class Dropout:
 # * 6.1. convolution layer
 class Convolution:
 
+    # * Parameters
+    # * W: filter, 4d (FilterNumber, Channle_number, FilterHeight, FilterWidth)
+    # * b: bias, 2d (FilterNumber, 1)
+    # * stride: stride
+    # * pad: padding
     def __init__(self, W, b, stride=1, pad=0):
+        
         # ? weights for filters
         self.W = W
         self.b = b
@@ -172,18 +178,23 @@ class Convolution:
         self.pad = pad
 
 
+    # * Parameters
+    # * x: input, 4d (Number, Channel, Height, Width)
     def forward(self, x):
+        
         # ? get 4 parameters of filter
         FN, C, FH, FW = self.W.shape
+
         # ? get 4 parameters of input data
         N, C, H, W = x.shape
+
         # ? calculate output shape
         out_h = int(1 + (H + 2 * self.pad - FH) / self.stride)
         out_w = int(1 + (W + 2 * self.pad - FW) / self.stride)
 
-        # ? expand input dataset to 2d array
+        # ! expand input dataset to 2d array (FN*outH*outW, -1)
         col = im2col(x, FH, FW, self.stride, self.pad)
-        # ? expand filter to 2d array
+        # ! expand filter to 2d array (-1, FN)
         col_W = self.W.reshape(FN, -1).T
 
         # ? calculation output
@@ -210,7 +221,7 @@ class Convolution:
         return dx
 
 
-# * 6.2. Pooling Layer
+# * 6.2. Pooling Layer (Max pooling)
 class Pooling:
 
     def __init__(self, pool_h, pool_w, stride=1, pad=0):
