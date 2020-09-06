@@ -179,10 +179,10 @@ class Convolution:
 
 
     # * Parameters
-    # * x: input, 4d (Number, Channel, Height, Width)
+    # * x: input, 4d (Batch number, Channel, Height, Width)
     def forward(self, x):
         
-        # ? get 4 parameters of filter
+        # ? get 4 parameters of filter (Filter Number, Channel, Filter Height, Filter Width)
         FN, C, FH, FW = self.W.shape
 
         # ? get 4 parameters of input data
@@ -224,6 +224,12 @@ class Convolution:
 # * 6.2. Pooling Layer (Max pooling)
 class Pooling:
 
+    # * Parameter:
+    # * pool_h: height of pool
+    # * pool_w: width of pool
+    # * stride: stride (default 1)
+    # * pad: padding (default 0)
+    # ! Note: there is no Weight or Bias for Pooling layer
     def __init__(self, pool_h, pool_w, stride=1, pad=0):
         self.pool_h = pool_h
         self.pool_w = pool_w
@@ -231,16 +237,21 @@ class Pooling:
         self.pad = pad
 
     
+    # * Parameter:
+    # * x: input dataset, 4d (Batch number, Channel, Height, Width)
     def forward(self, x):
+
+        # ? Get and calculate shape information
         N, C, H, W = x.shape
         out_h = int(1 + (H - self.pool_h) / self.stride)
         out_w = int(1 + (H - self.pool_w) / self.stride)
 
         # ? step 1. expand input dataset
         col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
+        # ? reshape, elements in each row = elements in one pool
         col = col.reshape(-1, self.pool_h * self.pool_w)
 
-        # ? step 2. max value of each row
+        # ? step 2. max value of each row (each pool), shape is 2d (N*C*out_h*out_w , 1)
         out = np.max(col, axis=1)
 
         # ? step 3. transform to correct form for output
