@@ -1,4 +1,6 @@
 # coding: utf-8
+
+#%%
 class Man:
     """示例类"""   # 示例类
 
@@ -6,12 +8,23 @@ class Man:
         self.name = name
         print("Initilized!")
 
+
     def hello(self):
         print("Hello " + self.name + "!")
+
 
     def goodbye(self):
         print("Good-bye " + self.name + "!")
 
+
+    def helloAgain(self):
+        print('Hi')
+        self.hello()
+
+
 m = Man("David")
 m.hello()
 m.goodbye()
+m.helloAgain()
+
+# %%

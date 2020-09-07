@@ -1,3 +1,5 @@
+
+#%%
 import numpy as np
 
 print('1. numpy array')
@@ -44,3 +46,5 @@ print(A);
 print(A[np.array([0, 2, 4])])
 print(A > 3)
 print(A[A>3])
+
+# %%

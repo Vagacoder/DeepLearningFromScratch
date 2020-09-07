@@ -1,4 +1,6 @@
 # coding: utf-8
+
+#%%
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -8,6 +10,11 @@ def step_function(x):
 
 X = np.arange(-5.0, 5.0, 0.1)
 Y = step_function(X)
-plt.plot(X, Y)
+plt.plot(X, Y, linestyle='-', label='Step Function')
 plt.ylim(-0.1, 1.1)  # 指定图中绘制的y轴的范围
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
 plt.show()
+
+# %%

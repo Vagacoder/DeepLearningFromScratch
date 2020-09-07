@@ -15,7 +15,12 @@ x = np.arange(-5.0, 5.0, 0.1)
 y1 = sigmoid(x)
 y2 = step_function(x)
 
-plt.plot(x, y1)
-plt.plot(x, y2, 'k--')
+plt.plot(x, y1, label='Sigmoid')
+plt.plot(x, y2, 'k--', label='Step')
 plt.ylim(-0.1, 1.1) #指定图中绘制的y轴的范围
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
 plt.show()
+
+# %%

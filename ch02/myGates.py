@@ -1,5 +1,5 @@
 #
-
+#%%
 # * AND gate
 def AND(x1, x2):
     w1 = 0.5
@@ -71,3 +71,4 @@ print(XOR(0, 0))
 print(XOR(1, 0))
 print(XOR(0, 1))
 print(XOR(1, 1))
+# %%
