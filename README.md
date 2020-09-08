@@ -4,6 +4,9 @@
 [![DeepLearningFromScratch](https://img.shields.io/badge/DeepLearning-JapaneseVersion-salmon)](https://www.oreilly.co.jp/books/9784873117584/)
 [![DeepLearningFromScratch](https://img.shields.io/badge/SourceCode-DeepLearningFromScratch-salmon)](https://github.com/oreilly-japan/deep-learning-from-scratch)
 
+## Simple Convolutional Neural Network Training Result (MNIST handwritten dataset)
+![CnnTraininResult](images/simpleCNN.png)
+
 ## Update logs
 #### 2019/06/16
 Initial repository.
