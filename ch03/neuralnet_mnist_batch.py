@@ -1,4 +1,7 @@
+#
 # coding: utf-8
+
+#%%
 import sys, os
 sys.path.append(os.pardir)  # 为了导入父目录的文件而进行的设定
 import numpy as np
@@ -38,6 +41,7 @@ network = init_network()
 batch_size = 100 # 批数量
 accuracy_cnt = 0
 
+# * Predict on batch
 for i in range(0, len(x), batch_size):
     x_batch = x[i:i+batch_size]
     y_batch = predict(network, x_batch)
@@ -45,3 +49,5 @@ for i in range(0, len(x), batch_size):
     accuracy_cnt += np.sum(p == t[i:i+batch_size])
 
 print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
+
+# %%

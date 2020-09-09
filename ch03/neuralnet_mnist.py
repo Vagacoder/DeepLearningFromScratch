@@ -1,4 +1,6 @@
 # coding: utf-8
+
+#%%
 import sys, os
 sys.path.append(os.pardir)  # 为了导入父目录的文件而进行的设定
 import numpy as np
@@ -8,7 +10,11 @@ from common.functions import sigmoid, softmax
 
 
 def get_data():
-    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, flatten=True, one_hot_label=False)
+    (x_train, t_train), (x_test, t_test) = load_mnist(
+                                            normalize=True, 
+                                            flatten=True, 
+                                            one_hot_label=False
+                                            )
     return x_test, t_test
 
 
@@ -35,6 +41,8 @@ def predict(network, x):
 x, t = get_data()
 network = init_network()
 accuracy_cnt = 0
+
+# * Predict on single data entry, to do batch predict, see neualnet_mnist_batch.py
 for i in range(len(x)):
     y = predict(network, x[i])
     p= np.argmax(y) # 获取概率最高的元素的索引
@@ -42,3 +50,4 @@ for i in range(len(x)):
         accuracy_cnt += 1
 
 print("Accuracy:" + str(float(accuracy_cnt) / len(x)))
+# %%

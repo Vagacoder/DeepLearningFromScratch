@@ -1,5 +1,8 @@
+#
 # coding: utf-8
 # cf.http://d.hatena.ne.jp/white_wheels/20100327/p3
+
+#%%
 import numpy as np
 import matplotlib.pylab as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -53,11 +56,17 @@ if __name__ == '__main__':
     x1 = np.arange(-2, 2.5, 0.25)
     X, Y = np.meshgrid(x0, x1)
     
+    # print(X)
+    # print(Y)
+
     X = X.flatten()
     Y = Y.flatten()
     
     grad = numerical_gradient(function_2, np.array([X, Y]) )
     
+    # print(np.array([X, Y]))
+
+
     plt.figure()
     plt.quiver(X, Y, -grad[0], -grad[1],  angles="xy",color="#666666")#,headwidth=10,scale=40,color="#444444")
     plt.xlim([-2, 2])
@@ -68,3 +77,4 @@ if __name__ == '__main__':
     plt.legend()
     plt.draw()
     plt.show()
+# %%

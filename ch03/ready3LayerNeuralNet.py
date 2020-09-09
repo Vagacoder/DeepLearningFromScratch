@@ -1,7 +1,7 @@
-
+#
 # * official 3-layer neural network
 
-#
+#%%
 import numpy as np 
 
 # * helper 

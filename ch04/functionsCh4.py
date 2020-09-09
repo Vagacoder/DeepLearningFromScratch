@@ -26,7 +26,7 @@ def mean_squared_error(y, t):
 
 # * 2.2. cross entropy error simple version, using with softmax (1.2.)
 def cross_entropy_error_simple(y, t):
-    # ! plus delta to protect from np.log(0) -> inf
+    # ! plus delta to protect from np.log(0) -> -inf
     delta = 1e-7
     return -np.sum(t * np.log(y + delta))
 

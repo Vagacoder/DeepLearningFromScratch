@@ -1,7 +1,7 @@
+#
 # * Two layer neural network, from textbook, referred from CS231n
 
-#
-
+#%%
 import sys, os
 sys.path.append(os.pardir)
 from common.functions import *

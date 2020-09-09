@@ -1,4 +1,5 @@
 # coding: utf-8
+#%%
 import sys, os
 sys.path.append(os.pardir)  # 为了导入父目录的文件而进行的设定
 import numpy as np
@@ -26,3 +27,5 @@ img = img.reshape(28, 28)  # 把图像的形状变为原来的尺寸
 print(img.shape)  # (28, 28)
 
 img_show(img)
+
+# %%

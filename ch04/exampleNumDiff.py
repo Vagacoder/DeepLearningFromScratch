@@ -1,7 +1,7 @@
+#
 # * Example of numerical differentiation
 
 #%%
-
 import numpy as np 
 import matplotlib.pylab as plt
 from functionsCh4 import numerical_diff
@@ -11,7 +11,7 @@ def function1(x):
 
 
 
-x = np.arange(0.0, 20.0, 0.1)
+x = np.arange(-5.0, 25.0, 0.1)
 y = function1(x)
 
 x1 = 10
@@ -34,10 +34,13 @@ yt10 = tagLineOfFunc1At10(x)
 yt5 = tagLineOfFunc1At5(x)
 
 plt.xlabel('x')
-plt.ylabel('f(x) = 0.01*x^2 + 0.1*x')
-plt.plot(x, y, label='f(x)')
-plt.plot(x, yt10, label='tagent line at 10')
-plt.plot(x, yt5, label='tagent line at 5')
+plt.ylabel('f(x)')
+plt.xlim(-10, 30)
+plt.plot(x, y, label='f(x) = 0.01*x^2 + 0.1*x')
+plt.plot(x, yt10, linestyle='--', label='tagent line at 10')
+plt.plot(x, yt5, linestyle='dotted', label='tagent line at 5')
 plt.legend();
 plt.show()
 
+
+# %%

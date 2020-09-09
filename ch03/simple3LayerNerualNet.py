@@ -43,7 +43,14 @@ print(Z2)
 W3 = np.array([[0.1, 0.3], [0.2, 0.4]])
 B3 = np.array([0])
 
+print(Z2.shape)
+print(W3.shape)
+print(B3.shape)
+
 A3 = np.dot(Z2, W3) + B3
+print(A3)
 
 Y = identity_function(A3)
 print(Y)
+
+# %%
