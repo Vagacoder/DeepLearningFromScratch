@@ -1,4 +1,6 @@
 # coding: utf-8
+
+#%%
 import sys, os
 sys.path.append(os.pardir)  # 为了导入父目录中的文件而进行的设定
 import numpy as np
@@ -28,7 +30,13 @@ t = np.array([0, 0, 1])
 
 net = simpleNet()
 
+# ! since inside of numerical_gradient, f is called and passed with one parameter
+# ! we have to adapt this signature.
+# * w is a psuedo parameter, never used, since, net.loss and net.W are from same 
+# * object, no need to pass net.W to net.loss()
 f = lambda w: net.loss(x, t)
 dW = numerical_gradient(f, net.W)
 
 print(dW)
+
+# %%

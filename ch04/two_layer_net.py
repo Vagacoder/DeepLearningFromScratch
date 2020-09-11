@@ -15,6 +15,7 @@ class TwoLayerNet:
         self.params['W2'] = weight_init_std * np.random.randn(hidden_size, output_size)
         self.params['b2'] = np.zeros(output_size)
 
+
     def predict(self, x):
         W1, W2 = self.params['W1'], self.params['W2']
         b1, b2 = self.params['b1'], self.params['b2']
@@ -26,12 +27,14 @@ class TwoLayerNet:
         
         return y
         
+
     # x:输入数据, t:监督数据
     def loss(self, x, t):
         y = self.predict(x)
-        
+    
         return cross_entropy_error(y, t)
     
+
     def accuracy(self, x, t):
         y = self.predict(x)
         y = np.argmax(y, axis=1)
@@ -40,6 +43,7 @@ class TwoLayerNet:
         accuracy = np.sum(y == t) / float(x.shape[0])
         return accuracy
         
+
     # x:输入数据, t:监督数据
     def numerical_gradient(self, x, t):
         loss_W = lambda W: self.loss(x, t)
@@ -52,6 +56,7 @@ class TwoLayerNet:
         
         return grads
         
+
     def gradient(self, x, t):
         W1, W2 = self.params['W1'], self.params['W2']
         b1, b2 = self.params['b1'], self.params['b2']
@@ -76,3 +81,4 @@ class TwoLayerNet:
         grads['b1'] = np.sum(dz1, axis=0)
 
         return grads
+
