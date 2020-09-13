@@ -10,11 +10,14 @@ from functionsCh4 import softmax, cross_entropy_error, im2col, col2im
 # * 1. Simple operation layers =================================================
 # * 1.1. Multiplication layer
 class MulLayer:
+
+    # * need store forward input x, y for backward calculation
     def __init__(self):
         self.x = None
         self.y = None
 
 
+    # * store forward input x, y
     def forward(self, x, y):
         self.x = x
         self.y = y
@@ -22,6 +25,7 @@ class MulLayer:
         return out
 
 
+    # * backward calculation is called invertion y -> dx, x -> dy
     def backward(self, dout):
         dx = dout * self.y
         dy = dout * self.x
@@ -38,6 +42,7 @@ class AddLayer:
         return x + y
     
 
+    # * simply pass dout without any change
     def backward(self, dout):
         return (dout * 1), (dout * 1)
 

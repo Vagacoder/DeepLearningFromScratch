@@ -76,7 +76,10 @@ class RMSprop:
 
         for key in params.keys():
             self.h[key] *= self.decay_rate
+
+            # * Key improvement: let h decay
             self.h[key] += (1 - self.decay_rate) * grads[key] * grads[key]
+            
             params[key] -= self.lr * grads[key] / (np.sqrt(self.h[key]) + 1e-7)
 
 

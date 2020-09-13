@@ -3,14 +3,15 @@
 #%%
 
 import numpy as np
+import sys, os
+sys.path.append(os.pardir)
 from exampleLayers import MulLayer
-
 
 applePrice = 100
 appleNumber = 2
 tax = 1.1
 
-# * layer
+# * only 2 layers, both are multiplication: ( apple # * apple price ) * taxrate
 appleMulLayer = MulLayer()
 taxMulLayer = MulLayer()
 
@@ -27,3 +28,5 @@ dApplePrice, dAppleNumber = appleMulLayer.backward(dAppleTotalPrice)
 
 print(dApplePrice, dAppleNumber, dTax)
 
+
+# %%

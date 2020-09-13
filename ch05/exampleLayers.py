@@ -5,7 +5,7 @@ import sys, os
 
 sys.path.append(os.pardir)
 
-from functionsCh4 import softmax, cross_entropy_error
+from ch04.functionsCh4 import softmax, cross_entropy_error
 
 # * 1. Simple operation layers =================================================
 # * 1.1. Multiplication layer
