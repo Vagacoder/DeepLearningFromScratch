@@ -22,13 +22,15 @@ node_num = 100  # 各隐藏层的节点（神经元）数
 hidden_layer_size = 5  # 隐藏层有5层
 activations = {}  # 激活值的结果保存在这里
 
+# * 1st layer input data
 x = input_data
 
 for i in range(hidden_layer_size):
+    # * other layers input data is output of previous layer
     if i != 0:
         x = activations[i-1]
 
-    # 改变初始值进行实验！
+    # * 改变初始值进行实验！
     # w = np.random.randn(node_num, node_num) * 1
     # w = np.random.randn(node_num, node_num) * 0.01
     # w = np.random.randn(node_num, node_num) * np.sqrt(1.0 / node_num)
@@ -38,7 +40,7 @@ for i in range(hidden_layer_size):
     a = np.dot(x, w)
 
 
-    # 将激活函数的种类也改变，来进行实验！
+    # * 将激活函数的种类也改变，来进行实验！
     # z = sigmoid(a)
     z = ReLU(a)
     # z = tanh(a)
@@ -54,3 +56,5 @@ for i, a in activations.items():
     # plt.ylim(0, 7000)
     plt.hist(a.flatten(), 30, range=(0,1))
 plt.show()
+
+# %%

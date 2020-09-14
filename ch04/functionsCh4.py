@@ -11,6 +11,7 @@ def identity_function(x):
 
 # * 1.2. Softmax function
 def softmax(a):
+    '''Softmax function'''
     c = np.max(a)
     exp_a = np.exp(a - c)
     sum_exp_a = np.sum(exp_a)
