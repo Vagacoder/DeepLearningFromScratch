@@ -1,4 +1,5 @@
 # coding: utf-8
+#%%
 import numpy as np
 import matplotlib.pyplot as plt
 from simple_convnet import SimpleConvNet
@@ -26,3 +27,4 @@ filter_show(network.params['W1'])
 # 学习后的权重
 network.load_params("params.pkl")
 filter_show(network.params['W1'])
+# %%
